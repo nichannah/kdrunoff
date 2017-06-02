@@ -1,0 +1,3 @@
+[submodule "kdtree2"]
+	path = kdtree2
+	url = git@github.com:jmhodges/kdtree2.git
