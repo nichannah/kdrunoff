@@ -50,8 +50,10 @@ program test
   integer, parameter :: NX = 360
   integer, parameter :: NY = 300
   real, dimension(:, :), allocatable :: x_t, y_t, mask, runoff
+  real, dimension(:, :), allocatable :: old_runoff
 
   allocate(x_t(NX, NY), y_t(NX, NY), mask(NX, NY), runoff(NX, NY))
+  allocate(old_runoff(NX, NY))
 
   call read_field_2d(x_t, 'test.nc', 'x_T')
   call read_field_2d(y_t, 'test.nc', 'y_T')
@@ -61,6 +63,7 @@ program test
 
   ! Make a random runoff field.
   call random_number(runoff)
+  old_runoff(:, :) = runoff(:, :)
 
   ! Make sure there is something on the land.
   if (sum((1 - mask(:, :))*runoff(:, :)) <= 0.0) then
@@ -75,6 +78,15 @@ program test
     print*, 'Runoff left on land.'
     stop 1
   endif
+
+  ! Test that totals are the same.
+  if (abs(sum(old_runoff) - sum(runoff)) > 1e15) then
+    print*, 'Totals are different'
+    print*, sum(old_runoff), sum(runoff)
+    stop 1
+  endif
+
+  deallocate(x_t, y_t, mask, runoff, old_runoff)
 
   call kdrunoff_end()
 
