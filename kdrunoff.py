@@ -5,6 +5,9 @@ from scipy import spatial
 class Kdrunoff:
 
     def __init__(self, land_sea_mask, x_t, y_t):
+        """
+        The land-sea mask is true on ocean points, false otherwise.
+        """
 
         coords = [list(i) for i in zip(x_t.ravel(), y_t.ravel())]
 
@@ -16,7 +19,7 @@ class Kdrunoff:
         ocean_points = []
         ocean_indices = []
         for n, i in enumerate(indices):
-            if land_sea_mask[i[1], i[0]] < 0.5:
+            if not land_sea_mask[i[1], i[0]]:
                 land_points.append(coords[n])
                 land_indices.append(indices[n])
             else:

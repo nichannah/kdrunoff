@@ -19,13 +19,14 @@ module kdrunoff
 contains
 
   subroutine kdrunoff_init(land_sea_mask, x_t, y_t, num_land_points)
-    real, dimension(:, :), intent(in) :: land_sea_mask, x_t, y_t
+    logical, dimension(:, :), intent(in) :: land_sea_mask
+    real, dimension(:, :), intent(in) :: x_t, y_t
     integer, intent(out) :: num_land_points
 
     integer :: nx, ny, n, i, j, n_ocn, n_land
 
     ! Total number of ocean points.
-    n = sum(land_sea_mask)
+    n = count(land_sea_mask)
     nx = size(land_sea_mask, 1)
     ny = size(land_sea_mask, 2)
 
@@ -41,7 +42,7 @@ contains
     n_land = 1
     do j=1,ny
       do i=1,nx
-        if (land_sea_mask(i, j) > 0.5) then
+        if (land_sea_mask(i, j)) then
           ocean_points(1, n_ocn) = x_t(i, j)
           ocean_points(2, n_ocn) = y_t(i, j)
           ocean_indices(1, n_ocn) = i

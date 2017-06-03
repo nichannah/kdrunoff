@@ -51,16 +51,20 @@ program test
   integer, parameter :: NY = 300
   integer :: num_land_points
   real, dimension(:, :), allocatable :: x_t, y_t, mask, runoff
+  logical, dimension(:, :), allocatable :: land_sea_mask
   real, dimension(:, :), allocatable :: old_runoff
 
   allocate(x_t(NX, NY), y_t(NX, NY), mask(NX, NY), runoff(NX, NY))
-  allocate(old_runoff(NX, NY))
+  allocate(land_sea_mask(NX, NY), old_runoff(NX, NY))
 
   call read_field_2d(x_t, 'test.nc', 'x_T')
   call read_field_2d(y_t, 'test.nc', 'y_T')
   call read_field_2d(mask, 'test.nc', 'wet')
 
-  call kdrunoff_init(mask, x_t, y_t, num_land_points)
+  land_sea_mask(:, :) = .false.
+  where (mask > 0.5) land_sea_mask = .true.
+
+  call kdrunoff_init(land_sea_mask, x_t, y_t, num_land_points)
 
   ! Make a random runoff field.
   call random_number(runoff)

@@ -12,8 +12,10 @@ def main():
         y_t = f.variables['y_T'][:]
         mask = f.variables['wet'][:]
 
+    land_sea_mask = np.zeros_like(mask, type=bool)
+    land_sea_mask[np.where(mask > 0.5)] = True
 
-    kd = Kdrunoff(mask, x_t, y_t)
+    kd = Kdrunoff(land_sea_mask, x_t, y_t)
 
     runoff = np.random.random(mask.shape)
 
