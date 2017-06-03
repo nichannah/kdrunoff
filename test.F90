@@ -49,6 +49,7 @@ program test
 
   integer, parameter :: NX = 360
   integer, parameter :: NY = 300
+  integer :: num_land_points
   real, dimension(:, :), allocatable :: x_t, y_t, mask, runoff
   real, dimension(:, :), allocatable :: old_runoff
 
@@ -59,7 +60,7 @@ program test
   call read_field_2d(y_t, 'test.nc', 'y_T')
   call read_field_2d(mask, 'test.nc', 'wet')
 
-  call kdrunoff_init(mask, x_t, y_t)
+  call kdrunoff_init(mask, x_t, y_t, num_land_points)
 
   ! Make a random runoff field.
   call random_number(runoff)

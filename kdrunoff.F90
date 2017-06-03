@@ -18,8 +18,9 @@ module kdrunoff
 
 contains
 
-  subroutine kdrunoff_init(land_sea_mask, x_t, y_t)
+  subroutine kdrunoff_init(land_sea_mask, x_t, y_t, num_land_points)
     real, dimension(:, :), intent(in) :: land_sea_mask, x_t, y_t
+    integer, intent(out) :: num_land_points
 
     integer :: nx, ny, n, i, j, n_ocn, n_land
 
@@ -28,10 +29,12 @@ contains
     nx = size(land_sea_mask, 1)
     ny = size(land_sea_mask, 2)
 
+    num_land_points = nx*ny - n
+
     allocate(ocean_points(D, n))
     allocate(ocean_indices(D, n))
-    allocate(land_points(D, nx*ny - n))
-    allocate(land_indices(D, nx*ny - n))
+    allocate(land_points(D, num_land_points))
+    allocate(land_indices(D, num_land_points))
 
     ! Make lists of ocean and land points, also indices to those points.
     n_ocn = 1
